@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: penin-backend
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    plan: free
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_PATH
+        value: /var/data/bookbloom.db
+      - key: JWT_SECRET
+        generateValue: true

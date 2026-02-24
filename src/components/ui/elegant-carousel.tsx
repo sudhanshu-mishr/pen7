@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface SlideData {
@@ -51,7 +51,7 @@ const slides: SlideData[] = [
 ];
 
 export default function ElegantCarousel() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [direction, setDirection] = useState<'next' | 'prev'>('next');
@@ -62,7 +62,7 @@ export default function ElegantCarousel() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const SLIDE_DURATION = 2000;
+  const SLIDE_DURATION = 5000;
   const TRANSITION_DURATION = 800;
 
   const goToSlide = useCallback(
@@ -95,16 +95,19 @@ export default function ElegantCarousel() {
   useEffect(() => {
     if (isPaused) return;
 
-    progressRef.current = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) return 100;
-        return prev + 100 / (SLIDE_DURATION / 50);
-      });
-    }, 50);
-
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       goNext();
     }, SLIDE_DURATION);
+
+    if (progressRef.current) clearInterval(progressRef.current);
+    let startTime = Date.now();
+    progressRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const p = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      setProgress(p);
+      if (p >= 100) startTime = Date.now();
+    }, 50);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -139,7 +142,6 @@ export default function ElegantCarousel() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background accent wash */}
       <div
         className="carousel-bg-wash opacity-50 dark:opacity-30"
         style={{
@@ -148,10 +150,8 @@ export default function ElegantCarousel() {
       />
 
       <div className="carousel-inner">
-        {/* Left: Text Content */}
         <div className="carousel-content">
           <div className="carousel-content-inner">
-            {/* Collection number */}
             <div
               className={`carousel-collection-num ${isTransitioning ? 'transitioning' : 'visible'}`}
             >
@@ -161,14 +161,12 @@ export default function ElegantCarousel() {
               </span>
             </div>
 
-            {/* Title */}
             <h2
               className={`carousel-title ${isTransitioning ? 'transitioning' : 'visible'}`}
             >
               {currentSlide.title}
             </h2>
 
-            {/* Subtitle */}
             <p
               className={`carousel-subtitle ${isTransitioning ? 'transitioning' : 'visible'}`}
               style={{ color: currentSlide.accent }}
@@ -176,30 +174,27 @@ export default function ElegantCarousel() {
               {currentSlide.subtitle}
             </p>
 
-            {/* Description */}
             <p
               className={`carousel-description ${isTransitioning ? 'transitioning' : 'visible'}`}
             >
               {currentSlide.description}
             </p>
 
-            {/* CTA Buttons */}
             <div className={`flex gap-4 mb-12 transition-all duration-700 delay-400 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => router.push('/')}
                 className="btn-primary px-8 py-3"
               >
                 Start Reading
               </button>
               <button 
-                onClick={() => navigate('/write')}
+                onClick={() => router.push('/write')}
                 className="btn-secondary px-8 py-3 bg-white/50 dark:bg-white/5 backdrop-blur-sm"
               >
                 Publish Story
               </button>
             </div>
 
-            {/* Navigation Arrows */}
             <div className="carousel-nav-arrows">
               <button
                 onClick={goPrev}
@@ -219,7 +214,6 @@ export default function ElegantCarousel() {
           </div>
         </div>
 
-        {/* Right: Image */}
         <div className="carousel-image-container">
           <div
             className={`carousel-image-frame ${isTransitioning ? 'transitioning' : 'visible'}`}
@@ -238,13 +232,11 @@ export default function ElegantCarousel() {
             />
           </div>
 
-          {/* Decorative frame corner */}
           <div className="carousel-frame-corner carousel-frame-corner--tl" style={{ borderColor: currentSlide.accent }} />
           <div className="carousel-frame-corner carousel-frame-corner--br" style={{ borderColor: currentSlide.accent }} />
         </div>
       </div>
 
-      {/* Progress Indicators */}
       <div className="carousel-progress-bar">
         {slides.map((slide, index) => (
           <button
