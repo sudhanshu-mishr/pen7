@@ -1,0 +1,9 @@
+{
+  "name": "pen.in",
+  "description": "A minimal, powerful platform for writers and readers to connect through stories.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

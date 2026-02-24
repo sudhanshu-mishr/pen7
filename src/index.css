@@ -1,0 +1,481 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@keyframes parallax_fg {
+  0% {
+    background-position: 2765px 100%;
+  }
+  100% {
+    background-position: 550px 100%;
+  }
+}
+
+@keyframes parallax_bike {
+  0% {
+    background-position: -300px 100%;
+  }
+  100% {
+    background-position: 2000px 100%;
+  }
+}
+
+.parallax-layer {
+  animation-name: parallax_fg;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@theme inline {
+  --color-background: var(--bg-dark);
+  --color-foreground: #ffffff;
+}
+
+:root {
+  --bg-dark: #000000;
+}
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #991b1b;
+  --color-primary-foreground: #ffffff;
+  --color-accent: #c2410c;
+}
+
+@layer base {
+  * {
+    @apply transition-colors duration-300;
+  }
+
+  body {
+    @apply bg-[#fdfbf7] text-[#1a1a1a] font-sans antialiased;
+  }
+  
+  .dark body {
+    @apply bg-[#0a0a0a] text-[#f3f4f6];
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-bold tracking-tight;
+  }
+}
+
+.book-card {
+  @apply bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-black/10 dark:border-white/10 overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1;
+}
+
+.btn-primary {
+  @apply bg-[#991b1b] text-white px-6 py-2 rounded-full font-medium hover:bg-[#7f1d1d] shadow-sm hover:shadow-md transition-all active:scale-95;
+}
+
+.btn-secondary {
+  @apply bg-transparent border-2 border-[#991b1b] text-[#991b1b] dark:text-[#f87171] dark:border-[#f87171] px-6 py-2 rounded-full font-medium hover:bg-[#991b1b] hover:text-white dark:hover:bg-[#f87171] dark:hover:text-black transition-all active:scale-95;
+}
+
+/* Elegant Carousel Styles */
+.carousel-wrapper {
+  @apply relative w-full h-[85vh] overflow-hidden bg-transparent flex items-center;
+}
+
+.carousel-bg-wash {
+  @apply absolute inset-0 pointer-events-none transition-all duration-1000;
+}
+
+.carousel-inner {
+  @apply relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center;
+}
+
+.carousel-content {
+  @apply relative z-20;
+}
+
+.carousel-content-inner {
+  @apply max-w-xl;
+}
+
+.carousel-collection-num {
+  @apply flex items-center gap-4 mb-8 transition-all duration-700;
+}
+
+.carousel-collection-num.transitioning {
+  @apply opacity-0 -translate-y-4;
+}
+
+.carousel-collection-num.visible {
+  @apply opacity-100 translate-y-0;
+}
+
+.carousel-num-line {
+  @apply w-12 h-px bg-[#991b1b]/30;
+}
+
+.carousel-num-text {
+  @apply text-xs font-mono tracking-widest text-[#991b1b]/60;
+}
+
+.carousel-title {
+  @apply text-6xl md:text-8xl font-serif font-bold text-[#1a1a1a] dark:text-white mb-6 leading-[0.9] transition-all duration-700 delay-100;
+}
+
+.carousel-title.transitioning {
+  @apply opacity-0 -translate-y-8;
+}
+
+.carousel-title.visible {
+  @apply opacity-100 translate-y-0;
+}
+
+.carousel-subtitle {
+  @apply text-xl font-serif italic text-[#991b1b] dark:text-[#f87171] mb-8 transition-all duration-700 delay-200;
+}
+
+.carousel-subtitle.transitioning {
+  @apply opacity-0 -translate-y-4;
+}
+
+.carousel-subtitle.visible {
+  @apply opacity-100 translate-y-0;
+}
+
+.carousel-description {
+  @apply text-gray-700 dark:text-gray-300 leading-relaxed mb-12 max-w-md transition-all duration-700 delay-300;
+}
+
+.carousel-description.transitioning {
+  @apply opacity-0 -translate-y-4;
+}
+
+.carousel-description.visible {
+  @apply opacity-100 translate-y-0;
+}
+
+.carousel-nav-arrows {
+  @apply flex gap-4 transition-all duration-700 delay-400;
+}
+
+.carousel-arrow-btn {
+  @apply w-12 h-12 rounded-full border border-black/10 dark:border-white/20 flex items-center justify-center text-[#991b1b] dark:text-[#f87171] hover:bg-[#991b1b] hover:text-white dark:hover:bg-[#f87171] dark:hover:text-black transition-all duration-300;
+}
+
+.carousel-image-container {
+  @apply relative aspect-[3/4] max-w-md mx-auto lg:ml-auto w-full;
+}
+
+.carousel-image-frame {
+  @apply relative w-full h-full overflow-hidden rounded-2xl shadow-2xl transition-all duration-1000;
+}
+
+.carousel-image-frame.transitioning {
+  @apply scale-95 opacity-0 rotate-2;
+}
+
+.carousel-image-frame.visible {
+  @apply scale-100 opacity-100 rotate-0;
+}
+
+.carousel-image {
+  @apply w-full h-full object-cover;
+}
+
+.carousel-image-overlay {
+  @apply absolute inset-0 pointer-events-none;
+}
+
+.carousel-frame-corner {
+  @apply absolute w-12 h-12 border-2 pointer-events-none transition-all duration-1000 delay-300;
+}
+
+.carousel-frame-corner--tl {
+  @apply -top-4 -left-4 border-r-0 border-b-0;
+}
+
+.carousel-frame-corner--br {
+  @apply -bottom-4 -right-4 border-l-0 border-t-0;
+}
+
+.carousel-progress-bar {
+  @apply absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-8 z-30 w-full max-w-7xl px-8;
+}
+
+.carousel-progress-item {
+  @apply flex-1 flex flex-col gap-2 text-left;
+}
+
+.carousel-progress-track {
+  @apply h-px w-full bg-black/5 relative overflow-hidden;
+}
+
+.carousel-progress-fill {
+  @apply absolute inset-y-0 left-0 transition-all duration-100;
+}
+
+.carousel-progress-label {
+  @apply text-[10px] uppercase tracking-widest font-bold text-gray-300 transition-colors;
+}
+
+.carousel-progress-item:hover .carousel-progress-label {
+  @apply text-[#991b1b] dark:text-[#f87171];
+}
+
+.carousel-progress-item.active .carousel-progress-label {
+  @apply text-[#991b1b] dark:text-[#f87171];
+}
+
+/* Pencil Loader Animations */
+.pencil__body1,
+.pencil__body2,
+.pencil__body3,
+.pencil__eraser,
+.pencil__eraser-skew,
+.pencil__point,
+.pencil__rotate,
+.pencil__stroke {
+	animation-duration: 3s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+.pencil__body1 {
+	animation-name: pencilBody1;
+}
+.pencil__body2 {
+	animation-name: pencilBody2;
+}
+.pencil__body3 {
+	animation-name: pencilBody3;
+}
+.pencil__eraser {
+	animation-name: pencilEraser;
+}
+.pencil__eraser-skew {
+	animation-name: pencilEraserSkew;
+	animation-timing-function: ease-in-out;
+}
+.pencil__point {
+	animation-name: pencilPoint;
+}
+.pencil__rotate {
+	animation-name: pencilRotate;
+}
+.pencil__stroke {
+	animation-name: pencilStroke;
+}
+
+@keyframes pencilBody1 {
+  from,
+	to {
+    stroke-dashoffset: 351.86;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 150.8;
+    transform: rotate(-225deg);
+  }
+}
+
+@keyframes pencilBody2 {
+  from,
+	to {
+    stroke-dashoffset: 406.84;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 174.36;
+    transform: rotate(-225deg);
+  }
+}
+
+@keyframes pencilBody3 {
+  from,
+	to {
+    stroke-dashoffset: 296.88;
+    transform: rotate(-90deg);
+  }
+  50% {
+    stroke-dashoffset: 127.23;
+    transform: rotate(-225deg);
+  }
+}
+
+@keyframes pencilEraser {
+  from,
+	to {
+    transform: rotate(-45deg) translate(49px,0);
+  }
+  50% {
+    transform: rotate(0deg) translate(49px,0);
+  }
+}
+
+@keyframes pencilEraserSkew {
+  from,
+	32.5%,
+	67.5%,
+	to {
+    transform: skewX(0);
+  }
+  35%,
+	65% {
+    transform: skewX(-4deg);
+  }
+  37.5%, 
+	62.5% {
+    transform: skewX(8deg);
+  }
+  40%,
+	45%,
+	50%,
+	55%,
+	60% {
+    transform: skewX(-15deg);
+  }
+  42.5%,
+	47.5%,
+	52.5%,
+	57.5% {
+    transform: skewX(15deg);
+  }
+}
+
+@keyframes pencilPoint {
+  from,
+	to {
+    transform: rotate(-90deg) translate(49px,-30px);
+  }
+  50% {
+    transform: rotate(-225deg) translate(49px,-30px);
+  }
+}
+
+@keyframes pencilRotate {
+  from {
+    transform: translate(100px,100px) rotate(0);
+  }
+  to {
+    transform: translate(100px,100px) rotate(720deg);
+  }
+}
+
+@keyframes pencilStroke {
+  from {
+    stroke-dashoffset: 439.82;
+    transform: translate(100px,100px) rotate(-113deg);
+  }
+  50% {
+    stroke-dashoffset: 164.93;
+    transform: translate(100px,100px) rotate(-113deg);
+  }
+  75%,
+	to {
+    stroke-dashoffset: 439.82;
+    transform: translate(100px,100px) rotate(112deg);
+  }
+}
+
+.ql-toolbar.ql-snow {
+  border: none !important;
+  border-bottom: 1px solid rgba(0,0,0,0.1) !important;
+  background: #f9f8f6;
+  @apply transition-colors duration-300;
+}
+
+.dark .ql-toolbar.ql-snow {
+  background: #18181b !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.dark .ql-toolbar.ql-snow .ql-stroke {
+  stroke: #e4e4e7 !important;
+}
+
+.dark .ql-toolbar.ql-snow .ql-fill {
+  fill: #e4e4e7 !important;
+}
+
+.dark .ql-toolbar.ql-snow .ql-picker {
+  color: #e4e4e7 !important;
+}
+
+.dark .ql-snow .ql-editor.ql-blank::before {
+  color: #71717a !important;
+}
+
+.ql-container.ql-snow {
+  border: none !important;
+}
+
+/* Quill Dark Mode Overrides */
+.dark .ql-snow .ql-stroke {
+  stroke: #e4e4e7 !important;
+}
+
+.dark .ql-snow .ql-fill {
+  fill: #e4e4e7 !important;
+}
+
+.dark .ql-snow .ql-picker {
+  color: #e4e4e7 !important;
+}
+
+.dark .ql-snow .ql-picker-options {
+  background-color: #18181b !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+.dark .ql-snow .ql-picker-item {
+  color: #e4e4e7 !important;
+}
+
+.dark .ql-snow .ql-picker-item:hover {
+  color: #ffffff !important;
+  background-color: rgba(255,255,255,0.05) !important;
+}
+
+.dark .ql-snow.ql-toolbar button:hover .ql-stroke,
+.dark .ql-snow.ql-toolbar button:focus .ql-stroke,
+.dark .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.dark .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.dark .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.dark .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+.dark .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
+  stroke: #ffffff !important;
+}
+
+.dark .ql-snow.ql-toolbar button:hover .ql-fill,
+.dark .ql-snow.ql-toolbar button:focus .ql-fill,
+.dark .ql-snow.ql-toolbar button.ql-active .ql-fill,
+.dark .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+.dark .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
+.dark .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
+.dark .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill {
+  fill: #ffffff !important;
+}
+
+.dark .ql-editor {
+  color: #e4e4e7 !important;
+}
+
+.dark .ql-editor.ql-blank::before {
+  color: #71717a !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-black/10 dark:bg-white/10 rounded-full hover:bg-black/20 dark:hover:bg-white/20 transition-colors;
+}
