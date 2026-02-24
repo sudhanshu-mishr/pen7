@@ -1,13 +1,16 @@
+"use client";
+
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Star, MessageSquare, Heart, Share2, ArrowRight } from 'lucide-react';
-import { Book, Review } from '../types';
-import { useAuthStore } from '../store';
+import { Book, Review } from '@/types';
+import { useAuthStore } from '@/store';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 
-export const BookPreview = () => {
+export default function BookPreview() {
   const { id } = useParams();
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
@@ -17,17 +20,23 @@ export const BookPreview = () => {
   const { data: book, isLoading: bookLoading } = useQuery<Book>({
     queryKey: ['book', id],
     queryFn: async () => {
+      if (!id) return null;
       const res = await fetch(`/api/books/${id}`);
+      if (!res.ok) throw new Error('Failed to fetch book');
       return res.json();
-    }
+    },
+    enabled: !!id
   });
 
   const { data: reviews, isLoading: reviewsLoading } = useQuery<Review[]>({
     queryKey: ['reviews', id],
     queryFn: async () => {
+      if (!id) return [];
       const res = await fetch(`/api/reviews/${id}`);
+      if (!res.ok) return [];
       return res.json();
-    }
+    },
+    enabled: !!id
   });
 
   const reviewMutation = useMutation({
@@ -50,8 +59,8 @@ export const BookPreview = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: book.title,
-          text: book.description,
+          title: book?.title,
+          text: book?.description,
           url: window.location.href,
         });
       } catch (err) {
@@ -110,7 +119,7 @@ export const BookPreview = () => {
             <h1 className="text-5xl font-serif font-bold mb-4 leading-tight dark:text-white">{book.title}</h1>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-800" />
-              <span className="text-gray-600 dark:text-gray-400">by <Link to={`/profile/${book.author_name}`} className="font-bold hover:underline dark:text-white">{book.author_name}</Link></span>
+              <span className="text-gray-600 dark:text-gray-400">by <Link href="#" className="font-bold hover:underline dark:text-white">{book.author_name}</Link></span>
             </div>
             <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-8 max-w-2xl">
               {book.description || "No description provided."}

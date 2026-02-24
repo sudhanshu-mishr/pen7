@@ -1,20 +1,25 @@
-import React from 'react';
-import { useAuthStore } from '../store';
-import { useQuery } from '@tanstack/react-query';
-import { BookCard } from '../components/BookCard';
-import { Book } from '../types';
-import { PenTool, BookOpen, Star, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+"use client";
 
-export const Dashboard = () => {
+import React from 'react';
+import { useAuthStore } from '@/store';
+import { useQuery } from '@tanstack/react-query';
+import { BookCard } from '@/components/BookCard';
+import { Book } from '@/types';
+import { PenTool, BookOpen, Star, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
+export default function Dashboard() {
   const { user } = useAuthStore();
+  const router = useRouter();
 
   const { data: books } = useQuery<Book[]>({
     queryKey: ['my-books'],
     queryFn: async () => {
       const res = await fetch('/api/books');
-      const all = await res.json();
+      if (!res.ok) return [];
+      const all: Book[] = await res.json();
       return all.filter((b: Book) => b.author_id === user?.id);
     },
     enabled: !!user
@@ -23,6 +28,12 @@ export const Dashboard = () => {
   const handleSettings = () => {
     toast.success('Profile settings coming soon!');
   };
+
+  React.useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user, router]);
 
   if (!user) return null;
 
@@ -34,7 +45,7 @@ export const Dashboard = () => {
           <p className="text-gray-500 dark:text-gray-400">Here's what's happening with your stories.</p>
         </div>
         <div className="flex gap-3">
-          <Link to="/write" className="btn-primary flex items-center gap-2">
+          <Link href="/write" className="btn-primary flex items-center gap-2">
             <PenTool className="w-4 h-4" />
             Write New Book
           </Link>
@@ -83,7 +94,7 @@ export const Dashboard = () => {
       <div className="mb-12">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-serif font-bold dark:text-white">My Published Books</h2>
-          <Link to="/write" className="text-sm font-bold text-[#991b1b] dark:text-[#f87171] hover:underline">View All</Link>
+          <Link href="/write" className="text-sm font-bold text-[#991b1b] dark:text-[#f87171] hover:underline">View All</Link>
         </div>
         
         {books && books.length > 0 ? (
@@ -97,7 +108,7 @@ export const Dashboard = () => {
             <PenTool className="w-12 h-12 text-gray-200 dark:text-white/10 mx-auto mb-4" />
             <h3 className="text-xl font-serif font-bold mb-2 dark:text-white">No books yet</h3>
             <p className="text-gray-400 mb-8">Start your first story and share it with the world.</p>
-            <Link to="/write" className="btn-primary">Create Your First Book</Link>
+            <Link href="/write" className="btn-primary">Create Your First Book</Link>
           </div>
         )}
       </div>

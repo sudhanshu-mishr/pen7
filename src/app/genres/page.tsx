@@ -1,11 +1,12 @@
+"use client";
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BookCard } from '../components/BookCard';
-import { Book } from '../types';
-import { motion } from 'motion/react';
-import { cn } from '../lib/utils';
-
-import { BentoCard, BentoGrid } from '../components/ui/bento-grid';
+import { BookCard } from '@/components/BookCard';
+import { Book } from '@/types';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
 import { Heart, Sparkles, Rocket, Search, Flame, BookOpen } from 'lucide-react';
 
 const GENRES = [
@@ -53,7 +54,7 @@ const GENRES = [
   },
 ];
 
-export const Genres = () => {
+export default function Genres() {
   const [selectedGenre, setSelectedGenre] = React.useState<string | null>(null);
   const resultsRef = React.useRef<HTMLDivElement>(null);
 
@@ -61,6 +62,7 @@ export const Genres = () => {
     queryKey: ['books'],
     queryFn: async () => {
       const res = await fetch('/api/books');
+      if (!res.ok) return [];
       return res.json();
     }
   });
@@ -72,7 +74,6 @@ export const Genres = () => {
     setSelectedGenre(isDeselecting ? null : genreName);
     
     if (!isDeselecting) {
-      // Small timeout to allow the results section to render before scrolling
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
@@ -89,7 +90,6 @@ export const Genres = () => {
           </p>
         </div>
 
-        {/* Genre Grid */}
         <BentoGrid className="lg:grid-rows-3 mb-16">
           {GENRES.map((genre) => (
             <BentoCard 
@@ -109,7 +109,6 @@ export const Genres = () => {
           ))}
         </BentoGrid>
 
-        {/* Results */}
         <div ref={resultsRef} className="scroll-mt-32">
           {selectedGenre && (
             <motion.div

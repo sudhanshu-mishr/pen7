@@ -1,16 +1,19 @@
+"use client";
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BookCard } from '../components/BookCard';
-import { Book } from '../types';
+import { BookCard } from '@/components/BookCard';
+import { Book } from '@/types';
 import { TrendingUp, Star, MessageSquare } from 'lucide-react';
-import { motion } from 'motion/react';
-import EnergyBeam from '../components/ui/energy-beam';
+import { motion } from 'framer-motion';
+import EnergyBeam from '@/components/ui/energy-beam';
 
-export const Trending = () => {
+export default function Trending() {
   const { data: books, isLoading } = useQuery<Book[]>({
     queryKey: ['books'],
     queryFn: async () => {
       const res = await fetch('/api/books');
+      if (!res.ok) return [];
       return res.json();
     }
   });
@@ -54,28 +57,31 @@ export const Trending = () => {
             {/* Top 3 Featured Trending */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {trendingBooks?.slice(0, 3).map((book, index) => (
-                <motion.div
+                <div
                   key={book.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
                   className="relative group cursor-pointer"
                 >
-                  <div className="absolute -top-4 -left-4 w-12 h-12 bg-white dark:bg-zinc-800 rounded-full shadow-xl z-20 flex items-center justify-center font-serif font-bold text-2xl text-[#991b1b] dark:text-[#f87171] border border-black/5 dark:border-white/10">
-                    {index + 1}
-                  </div>
-                  <BookCard book={book} />
-                  <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span className="font-bold text-white">{book.rating_avg?.toFixed(1) || '0.0'}</span>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-white dark:bg-zinc-800 rounded-full shadow-xl z-20 flex items-center justify-center font-serif font-bold text-2xl text-[#991b1b] dark:text-[#f87171] border border-black/5 dark:border-white/10">
+                      {index + 1}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MessageSquare className="w-4 h-4" />
-                      <span>{book.review_count} reviews</span>
+                    <BookCard book={book} />
+                    <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span className="font-bold text-white">{book.rating_avg?.toFixed(1) || '0.0'}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MessageSquare className="w-4 h-4" />
+                        <span>{book.review_count} reviews</span>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </div>
               ))}
             </div>
 

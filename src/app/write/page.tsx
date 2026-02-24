@@ -1,14 +1,18 @@
+"use client";
+
 import React from 'react';
-import ReactQuill from 'react-quill-new';
+import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store';
 import { toast } from 'react-hot-toast';
 import { Save, Upload, Image as ImageIcon } from 'lucide-react';
 
-export const Editor = () => {
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+
+export default function Editor() {
   const { user } = useAuthStore();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [title, setTitle] = React.useState('');
   const [genre, setGenre] = React.useState('Romance');
   const [description, setDescription] = React.useState('');
@@ -27,7 +31,7 @@ export const Editor = () => {
   const handleLoginToPublish = () => {
     handleSaveDraft();
     toast('Please login to publish your story', { icon: '✍️' });
-    navigate('/login');
+    router.push('/login');
   };
 
   React.useEffect(() => {
@@ -69,7 +73,7 @@ export const Editor = () => {
 
       if (res.ok) {
         toast.success('Book published successfully!');
-        navigate('/dashboard');
+        router.push('/dashboard');
       } else {
         toast.error('Failed to publish');
       }
@@ -87,7 +91,7 @@ export const Editor = () => {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-black dark:hover:text-white">Cancel</button>
+            <button onClick={() => router.back()} className="text-gray-500 hover:text-black dark:hover:text-white">Cancel</button>
             <div className="h-4 w-px bg-gray-200 dark:bg-white/10" />
             <span className="text-sm font-medium text-gray-400">
               {wordCount} words
