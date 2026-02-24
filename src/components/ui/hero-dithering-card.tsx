@@ -1,6 +1,8 @@
+"use client";
+
 import { ArrowRight } from "lucide-react"
 import { useState, Suspense, lazy } from "react"
-import { useNavigate } from "react-router-dom"
+import { useRouter } from "next/navigation"
 
 const Dithering = lazy(() => 
   import("@paper-design/shaders-react").then((mod) => ({ default: mod.Dithering }))
@@ -8,7 +10,7 @@ const Dithering = lazy(() =>
 
 export function CTASection() {
   const [isHovered, setIsHovered] = useState(false)
-  const navigate = useNavigate()
+  const router = useRouter()
 
   return (
     <section className="py-24 w-full flex justify-center items-center px-4 md:px-6 bg-transparent">
@@ -56,7 +58,7 @@ export function CTASection() {
 
             {/* Button */}
             <button 
-              onClick={() => navigate('/write')}
+              onClick={() => router.push('/write')}
               className="group relative inline-flex h-14 items-center justify-center gap-3 overflow-hidden rounded-full bg-[#991b1b] px-12 text-base font-bold text-white transition-all duration-300 hover:bg-[#7f1d1d] hover:scale-105 active:scale-95 hover:ring-4 hover:ring-[#991b1b]/20"
             >
               <span className="relative z-10">Start Writing</span>

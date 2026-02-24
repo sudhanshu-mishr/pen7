@@ -13,6 +13,13 @@ interface ThemeState {
   setTheme: (theme: 'light' | 'dark') => void;
 }
 
+const getInitialTheme = (): 'light' | 'dark' => {
+  if (typeof window !== 'undefined') {
+    return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
+  }
+  return 'dark';
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
@@ -20,14 +27,18 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  theme: (localStorage.getItem('theme') as 'light' | 'dark') || 'dark',
+  theme: getInitialTheme(),
   toggleTheme: () => set((state) => {
     const newTheme = state.theme === 'light' ? 'dark' : 'light';
-    localStorage.setItem('theme', newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme);
+    }
     return { theme: newTheme };
   }),
   setTheme: (theme) => {
-    localStorage.setItem('theme', theme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', theme);
+    }
     set({ theme });
   },
 }));
