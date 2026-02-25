@@ -7,12 +7,13 @@ import { BeamsBackground } from './ui/beams-background';
 import ArtisticBackground from './ui/dynamic-background';
 import AnoAI from './ui/animated-shader-background';
 import ClickSpark from './ui/click-spark';
-import { useThemeStore } from '../store';
+import { useThemeStore, useAuthStore } from '../store';
 import { Toaster } from 'react-hot-toast';
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { theme } = useThemeStore();
+  const { setUser } = useAuthStore();
 
   // Handle theme application
   useEffect(() => {
@@ -21,13 +22,28 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
     root.classList.add(theme);
   }, [theme]);
 
-  // Handle initial loading
+  // Handle initial loading and session restoration
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+    const checkSession = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id) { // Check if user object is returned
+             setUser(data);
+          }
+        }
+      } catch (e) {
+        // Session check failed, user remains logged out
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1500);
+      }
+    };
+
+    checkSession();
+  }, [setUser]);
 
   if (loading) {
     return (
