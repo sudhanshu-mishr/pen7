@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Settings, CreditCard, FileText, LogOut, User, Sparkles } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Settings, CreditCard, FileText, LogOut, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store";
 import {
     DropdownMenu,
@@ -19,15 +20,6 @@ interface Profile {
     avatar: string;
     subscription?: string;
     model?: string;
-}
-
-interface MenuItem {
-    label: string;
-    value?: string;
-    href: string;
-    icon: React.ReactNode;
-    external?: boolean;
-    onClick?: () => void;
 }
 
 const Gemini = (props: React.SVGProps<SVGSVGElement>) => (
@@ -74,7 +66,7 @@ export function ProfileDropdown({
 }: ProfileDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
     const { user, logout } = useAuthStore();
-    const navigate = useNavigate();
+    const router = useRouter();
 
     if (!user) return null;
 
@@ -86,45 +78,15 @@ export function ProfileDropdown({
         model: "Gemini 2.0 Flash",
     };
 
-    const menuItems: MenuItem[] = [
-        {
-            label: "Dashboard",
-            href: "/dashboard",
-            icon: <User className="w-4 h-4" />,
-        },
-        {
-            label: "AI Assistant",
-            value: profileData.model,
-            href: "#",
-            icon: <Gemini className="w-4 h-4" />,
-        },
-        {
-            label: "Subscription",
-            value: profileData.subscription,
-            href: "#",
-            icon: <CreditCard className="w-4 h-4" />,
-        },
-        {
-            label: "Settings",
-            href: "#",
-            icon: <Settings className="w-4 h-4" />,
-        },
-        {
-            label: "Terms & Policies",
-            href: "#",
-            icon: <FileText className="w-4 h-4" />,
-            external: true,
-        },
-    ];
-
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await fetch('/api/auth/logout', { method: 'POST' });
         logout();
-        navigate("/");
+        router.push("/");
     };
 
     return (
         <div className={cn("relative", className)} {...props}>
-            <DropdownMenu onOpenChange={setIsOpen}>
+            <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                 <div className="group relative">
                     <DropdownMenuTrigger asChild>
                         <button
@@ -188,45 +150,102 @@ export function ProfileDropdown({
                     <DropdownMenuContent
                         align="end"
                         sideOffset={8}
-                        className="w-64 p-2 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 
-                    data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-top-right z-[110]"
+                        className="w-64 p-2 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 rounded-2xl shadow-xl shadow-zinc-900/5 dark:shadow-zinc-950/20 z-[110]"
                     >
                         <div className="px-3 py-2 mb-2">
                             <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Account</p>
                             <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">{profileData.email}</p>
                         </div>
                         <div className="space-y-1">
-                            {menuItems.map((item) => (
-                                <DropdownMenuItem key={item.label} asChild>
+                                <DropdownMenuItem asChild>
                                     <Link
-                                        to={item.href}
+                                        href="/dashboard"
                                         className="flex items-center p-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/60 rounded-xl transition-all duration-200 cursor-pointer group hover:shadow-sm border border-transparent hover:border-zinc-200/50 dark:hover:border-zinc-700/50"
                                     >
                                         <div className="flex items-center gap-2 flex-1">
                                             <span className="text-zinc-500 group-hover:text-[#5A5A40] dark:group-hover:text-[#c2c2a3] transition-colors">
-                                                {item.icon}
+                                                <User className="w-4 h-4" />
                                             </span>
                                             <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap group-hover:text-zinc-950 dark:group-hover:text-zinc-50 transition-colors">
-                                                {item.label}
+                                                Dashboard
                                             </span>
-                                        </div>
-                                        <div className="flex-shrink-0 ml-auto">
-                                            {item.value && (
-                                                <span
-                                                    className={cn(
-                                                        "text-[10px] font-bold rounded-md py-0.5 px-1.5 tracking-tight uppercase",
-                                                        item.label === "AI Assistant"
-                                                            ? "text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-500/10 border border-blue-500/10"
-                                                            : "text-[#5A5A40] bg-[#5A5A40]/10 dark:text-[#c2c2a3] dark:bg-[#c2c2a3]/10 border border-[#5A5A40]/10"
-                                                    )}
-                                                >
-                                                    {item.value}
-                                                </span>
-                                            )}
                                         </div>
                                     </Link>
                                 </DropdownMenuItem>
-                            ))}
+
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="#"
+                                        className="flex items-center p-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/60 rounded-xl transition-all duration-200 cursor-pointer group hover:shadow-sm border border-transparent hover:border-zinc-200/50 dark:hover:border-zinc-700/50"
+                                    >
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <span className="text-zinc-500 group-hover:text-[#5A5A40] dark:group-hover:text-[#c2c2a3] transition-colors">
+                                                <Gemini className="w-4 h-4" />
+                                            </span>
+                                            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap group-hover:text-zinc-950 dark:group-hover:text-zinc-50 transition-colors">
+                                                AI Assistant
+                                            </span>
+                                        </div>
+                                        <div className="flex-shrink-0 ml-auto">
+                                            <span className="text-[10px] font-bold rounded-md py-0.5 px-1.5 tracking-tight uppercase text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-500/10 border border-blue-500/10">
+                                                {profileData.model}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="#"
+                                        className="flex items-center p-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/60 rounded-xl transition-all duration-200 cursor-pointer group hover:shadow-sm border border-transparent hover:border-zinc-200/50 dark:hover:border-zinc-700/50"
+                                    >
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <span className="text-zinc-500 group-hover:text-[#5A5A40] dark:group-hover:text-[#c2c2a3] transition-colors">
+                                                <CreditCard className="w-4 h-4" />
+                                            </span>
+                                            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap group-hover:text-zinc-950 dark:group-hover:text-zinc-50 transition-colors">
+                                                Subscription
+                                            </span>
+                                        </div>
+                                        <div className="flex-shrink-0 ml-auto">
+                                            <span className="text-[10px] font-bold rounded-md py-0.5 px-1.5 tracking-tight uppercase text-[#5A5A40] bg-[#5A5A40]/10 dark:text-[#c2c2a3] dark:bg-[#c2c2a3]/10 border border-[#5A5A40]/10">
+                                                {profileData.subscription}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="#"
+                                        className="flex items-center p-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/60 rounded-xl transition-all duration-200 cursor-pointer group hover:shadow-sm border border-transparent hover:border-zinc-200/50 dark:hover:border-zinc-700/50"
+                                    >
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <span className="text-zinc-500 group-hover:text-[#5A5A40] dark:group-hover:text-[#c2c2a3] transition-colors">
+                                                <Settings className="w-4 h-4" />
+                                            </span>
+                                            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap group-hover:text-zinc-950 dark:group-hover:text-zinc-50 transition-colors">
+                                                Settings
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="#"
+                                        className="flex items-center p-3 hover:bg-zinc-100/80 dark:hover:bg-zinc-800/60 rounded-xl transition-all duration-200 cursor-pointer group hover:shadow-sm border border-transparent hover:border-zinc-200/50 dark:hover:border-zinc-700/50"
+                                    >
+                                        <div className="flex items-center gap-2 flex-1">
+                                            <span className="text-zinc-500 group-hover:text-[#5A5A40] dark:group-hover:text-[#c2c2a3] transition-colors">
+                                                <FileText className="w-4 h-4" />
+                                            </span>
+                                            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap group-hover:text-zinc-950 dark:group-hover:text-zinc-50 transition-colors">
+                                                Terms & Policies
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </DropdownMenuItem>
                         </div>
 
                         <DropdownMenuSeparator className="my-3 bg-gradient-to-r from-transparent via-zinc-200 to-transparent dark:via-zinc-800" />
