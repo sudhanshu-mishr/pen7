@@ -1,18 +1,14 @@
-"use client";
-
 import React from 'react';
-import dynamic from 'next/dynamic';
+import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store';
 import { toast } from 'react-hot-toast';
 import { Save, Upload, Image as ImageIcon } from 'lucide-react';
 
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-
-export default function Editor() {
+export const Editor = () => {
   const { user } = useAuthStore();
-  const router = useRouter();
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState('');
   const [genre, setGenre] = React.useState('Romance');
   const [description, setDescription] = React.useState('');
@@ -31,7 +27,7 @@ export default function Editor() {
   const handleLoginToPublish = () => {
     handleSaveDraft();
     toast('Please login to publish your story', { icon: '✍️' });
-    router.push('/login');
+    navigate('/login');
   };
 
   React.useEffect(() => {
@@ -73,7 +69,7 @@ export default function Editor() {
 
       if (res.ok) {
         toast.success('Book published successfully!');
-        router.push('/dashboard');
+        navigate('/dashboard');
       } else {
         toast.error('Failed to publish');
       }
@@ -91,7 +87,7 @@ export default function Editor() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
-            <button onClick={() => router.back()} className="text-gray-500 hover:text-black dark:hover:text-white">Cancel</button>
+            <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-black dark:hover:text-white">Cancel</button>
             <div className="h-4 w-px bg-gray-200 dark:bg-white/10" />
             <span className="text-sm font-medium text-gray-400">
               {wordCount} words

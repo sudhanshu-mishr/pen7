@@ -1,21 +1,19 @@
-"use client";
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { BookCard } from '@/components/BookCard';
-import { Book } from '@/types';
-import { motion } from 'framer-motion';
-import ElegantCarousel from '@/components/ui/elegant-carousel';
-import { CTASection } from '@/components/ui/hero-dithering-card';
-import { PublishingTimeline } from '@/components/PublishingTimeline';
-import MountainVistaParallax from '@/components/ui/mountain-vista-bg';
-import { useAuthStore } from '@/store';
+import { BookCard } from '../components/BookCard';
+import { Book } from '../types';
+import { motion } from 'motion/react';
+import ElegantCarousel from '../components/ui/elegant-carousel';
+import { CTASection } from '../components/ui/hero-dithering-card';
+import { PublishingTimeline } from '../components/PublishingTimeline';
+import MountainVistaParallax from '../components/ui/mountain-vista-bg';
+import { useAuthStore } from '../store';
 import { PenTool, BookOpen, Star, TrendingUp } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 const GENRES = ['All', 'Romance', 'Fantasy', 'Sci-Fi', 'Mystery', 'Thriller', 'Non-Fiction'];
 
-export default function Home() {
+export const Home = () => {
   const { user } = useAuthStore();
   const [selectedGenre, setSelectedGenre] = React.useState('All');
 
@@ -23,7 +21,6 @@ export default function Home() {
     queryKey: ['books'],
     queryFn: async () => {
       const res = await fetch('/api/books');
-      if (!res.ok) return [];
       return res.json();
     }
   });
@@ -32,8 +29,7 @@ export default function Home() {
     queryKey: ['my-books', user?.id],
     queryFn: async () => {
       const res = await fetch('/api/books');
-      if (!res.ok) return [];
-      const all: Book[] = await res.json();
+      const all = await res.json();
       return all.filter((b: Book) => b.author_id === user?.id);
     },
     enabled: !!user
@@ -55,7 +51,7 @@ export default function Home() {
               <h1 className="text-5xl font-serif font-bold mb-2 dark:text-white">Welcome back, {user.username}</h1>
               <p className="text-gray-500 dark:text-gray-400">Ready to continue your story?</p>
             </div>
-            <Link href="/write" className="btn-primary flex items-center gap-2 shadow-xl shadow-[#991b1b]/20 hover:scale-105 transition-transform">
+            <Link to="/write" className="btn-primary flex items-center gap-2 shadow-xl shadow-[#991b1b]/20 hover:scale-105 transition-transform">
               <PenTool className="w-4 h-4" />
               Write New Book
             </Link>
@@ -117,7 +113,7 @@ export default function Home() {
             <div className="mb-20">
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-serif font-bold dark:text-white">Your Recent Works</h2>
-                <Link href="/dashboard" className="text-sm font-bold text-[#991b1b] dark:text-[#f87171] hover:underline uppercase tracking-widest">Full Dashboard</Link>
+                <Link to="/dashboard" className="text-sm font-bold text-[#991b1b] dark:text-[#f87171] hover:underline uppercase tracking-widest">Full Dashboard</Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {myBooks.slice(0, 5).map(book => (

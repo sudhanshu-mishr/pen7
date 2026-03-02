@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { Star, MessageSquare } from 'lucide-react';
-import { Book } from '@/types';
+import { Book } from '../types';
 
 interface BookCardProps {
   book: Book;
@@ -9,7 +9,7 @@ interface BookCardProps {
 
 export const BookCard: React.FC<BookCardProps> = ({ book }) => {
   return (
-    <Link href={`/book/${book.id}`} className="book-card group">
+    <Link to={`/book/${book.id}`} className="book-card group">
       <div className="aspect-[2/3] relative overflow-hidden bg-[#f5f5f0] dark:bg-zinc-800">
         {book.cover_image ? (
           <img 
